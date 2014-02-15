@@ -155,9 +155,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\..\Addins\TWAddIn - For Testing.AddIn">
-      <Link>TWAddIn - For Testing.AddIn</Link>
-    </Content>
     <Content Include="Resources\Images.png" />
     <Content Include="Resources\Package.ico" />
     <Content Include="TWAddIn.AddIn" />

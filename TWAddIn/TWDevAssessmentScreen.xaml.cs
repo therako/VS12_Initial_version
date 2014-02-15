@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
+using TWAddIn.Services;
 
 namespace TWAddIn
 {
@@ -22,12 +23,25 @@ namespace TWAddIn
             }
         }
 
+        public string UserId { get; set; }
+
         public string QuestionDescription { get; set; }
 
         
         private void StartTest(object sender, RoutedEventArgs e)
         {
-            IsLoggedIn = true;
+            var userService = new UserService();
+            var result = userService.BeginSessionForTheUser(UserId);
+            if (result)
+            {
+                MessageBox.Show("Successfully Registered, You can start writing your code on a Console Application Project.\n Refer to THOUGHTWORKS menu for Questions and Test cases execution.");
+                IsLoggedIn = true;
+            }
+            else
+            {
+                MessageBox.Show("ThoughtWorks server not reachable! Please try again after sometime.\nIf issue continues, please contact recruitment team.");
+            }
+
 
         }
 

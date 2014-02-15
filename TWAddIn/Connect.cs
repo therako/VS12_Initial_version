@@ -2,10 +2,13 @@
 using Extensibility;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.CommandBars;
 using System.Resources;
 using System.Reflection;
 using System.Globalization;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace TWAddIn
 {
@@ -18,7 +21,7 @@ namespace TWAddIn
 		{
 		}
 
-		/// <summary>Implements the OnConnection method of the IDTExtensibility2 interface. Receives notification that the Add-in is being loaded.</summary>
+	    /// <summary>Implements the OnConnection method of the IDTExtensibility2 interface. Receives notification that the Add-in is being loaded.</summary>
 		/// <param term='application'>Root object of the host application.</param>
 		/// <param term='connectMode'>Describes how the Add-in is being loaded.</param>
 		/// <param term='addInInst'>Object representing this Add-in.</param>
@@ -27,40 +30,57 @@ namespace TWAddIn
 		{
 			_applicationObject = (DTE2)application;
 			_addInInstance = (AddIn)addInInst;
-			if(connectMode == ext_ConnectMode.ext_cm_UISetup)
-			{
-				object []contextGUIDS = new object[] { };
-				Commands2 commands = (Commands2)_applicationObject.Commands;
-				string toolsMenuName = "Tools";
 
-				//Place the command on the tools menu.
-				//Find the MenuBar command bar, which is the top-level command bar holding all the main menu items:
-				Microsoft.VisualStudio.CommandBars.CommandBar menuBarCommandBar = ((Microsoft.VisualStudio.CommandBars.CommandBars)_applicationObject.CommandBars)["MenuBar"];
+	        if (connectMode == ext_ConnectMode.ext_cm_UISetup)
+	        {
+	            object[] contextGUIDS = new object[] {};
+	            Commands2 commands = (Commands2) _applicationObject.Commands;
+	            string toolsMenuName = "Tools";
 
-				//Find the Tools command bar on the MenuBar command bar:
-				CommandBarControl toolsControl = menuBarCommandBar.Controls[toolsMenuName];
-				CommandBarPopup toolsPopup = (CommandBarPopup)toolsControl;
+	            //Place the command on the tools menu.
+	            //Find the MenuBar command bar, which is the top-level command bar holding all the main menu items:
+	            Microsoft.VisualStudio.CommandBars.CommandBar menuBarCommandBar =
+	                ((Microsoft.VisualStudio.CommandBars.CommandBars) _applicationObject.CommandBars)["MenuBar"];
 
-				//This try/catch block can be duplicated if you wish to add multiple commands to be handled by your Add-in,
-				//  just make sure you also update the QueryStatus/Exec method to include the new command names.
-				try
-				{
-					//Add a command to the Commands collection:
-					Command command = commands.AddNamedCommand2(_addInInstance, "TWAddIn", "TWAddIn", "Executes the command for TWAddIn", true, 59, ref contextGUIDS, (int)vsCommandStatus.vsCommandStatusSupported+(int)vsCommandStatus.vsCommandStatusEnabled, (int)vsCommandStyle.vsCommandStylePictAndText, vsCommandControlType.vsCommandControlTypeButton);
+	            //Find the Tools command bar on the MenuBar command bar:
+	            CommandBarControl toolsControl = menuBarCommandBar.Controls[toolsMenuName];
+	            CommandBarPopup toolsPopup = (CommandBarPopup) toolsControl;
 
-					//Add a control for the command to the tools menu:
-					if((command != null) && (toolsPopup != null))
-					{
-						command.AddControl(toolsPopup.CommandBar, 1);
-					}
-				}
-				catch(System.ArgumentException)
-				{
-					//If we are here, then the exception is probably because a command with that name
-					//  already exists. If so there is no need to recreate the command and we can 
-                    //  safely ignore the exception.
-				}
-			}
+	            //This try/catch block can be duplicated if you wish to add multiple commands to be handled by your Add-in,
+	            //  just make sure you also update the QueryStatus/Exec method to include the new command names.
+	            try
+	            {
+	                //Add a command to the Commands collection:
+	                Command command = commands.AddNamedCommand2(_addInInstance, "TWAddIn", "TWAddIn",
+	                    "Executes the command for TWAddIn", true, 59, ref contextGUIDS,
+	                    (int) vsCommandStatus.vsCommandStatusSupported + (int) vsCommandStatus.vsCommandStatusEnabled,
+	                    (int) vsCommandStyle.vsCommandStylePictAndText, vsCommandControlType.vsCommandControlTypeButton);
+
+	                //Add a control for the command to the tools menu:
+	                if ((command != null) && (toolsPopup != null))
+	                {
+	                    command.AddControl(toolsPopup.CommandBar, 1);
+	                }
+
+                    var add_in = _applicationObject.AddIns.Item(1);
+	                var window = (Windows2) _applicationObject.Windows;
+
+                    var assemblypath = Assembly.GetExecutingAssembly().Location;
+                    string classname = "TWAddIn.TWDevAssessmentControl";
+	                string guidpos = "{E87F0FC8-5330-442C-AF56-4F42B5F1AD11}";
+	                string caption = "ThoughtWorks Dev Assessment";
+                    object ctlobj = null;
+
+	                Window myWindow = window.CreateToolWindow2(add_in, assemblypath, classname, caption, guidpos, ref ctlobj);
+	                myWindow.Visible = true;
+	            }
+	            catch (System.ArgumentException)
+	            {
+	                //If we are here, then the exception is probably because a command with that name
+	                //  already exists. If so there is no need to recreate the command and we can 
+	                //  safely ignore the exception.
+	            }
+	        }
 		}
 
 		/// <summary>Implements the OnDisconnection method of the IDTExtensibility2 interface. Receives notification that the Add-in is being unloaded.</summary>

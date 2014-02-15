@@ -56,5 +56,15 @@
             <param term='handled'>Informs the caller if the command was handled or not.</param>
             <seealso class='Exec' />
         </member>
+        <member name="T:TWAddIn.TWDevAssessmentScreen">
+            <summary>
+            TWDevAssessmentScreen
+            </summary>
+        </member>
+        <member name="M:TWAddIn.TWDevAssessmentScreen.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
     </members>
 </doc>

@@ -49,20 +49,29 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\packages\DotNetZip.1.9.2\lib\net20\Ionic.Zip.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.Shell.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs">
@@ -74,6 +83,7 @@
     <Compile Include="Models\NewTestCase.cs" />
     <Compile Include="Models\Questions.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="ScreenSelector.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\HttpUtility.cs" />
     <Compile Include="Services\LogService.cs" />
@@ -83,6 +93,10 @@
     <Compile Include="Services\TimerService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\ZipService.cs" />
+    <Compile Include="TWDevAssessmentScreen.xaml.cs">
+      <DependentUpon>TWDevAssessmentScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TWDevAssessmentControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="EnvDTE">
@@ -147,6 +161,12 @@
     <Content Include="Resources\Images.png" />
     <Content Include="Resources\Package.ico" />
     <Content Include="TWAddIn.AddIn" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="TWDevAssessmentScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

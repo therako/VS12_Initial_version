@@ -1,5 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.IO;
 using System.Windows;
+using EnvDTE;
 using TWAddIn.Services;
 
 namespace TWAddIn
@@ -10,8 +13,12 @@ namespace TWAddIn
         {
             InitializeComponent();
             IsLoggedIn = true;
+            userService = new UserService();
+            zipService = new ZipService();
         }
         private bool isLoggedIn;
+        private readonly UserService userService;
+        private readonly ZipService zipService;
 
         public bool IsLoggedIn
         {
@@ -30,7 +37,7 @@ namespace TWAddIn
         
         private void StartTest(object sender, RoutedEventArgs e)
         {
-            var userService = new UserService();
+            
             var result = userService.BeginSessionForTheUser(UserId);
             if (result)
             {
@@ -54,6 +61,38 @@ namespace TWAddIn
             {
                 handler(this, new PropertyChangedEventArgs(name));
             }
+        }
+
+        private void SubmitCode(object sender, RoutedEventArgs e)
+        {
+            userService.FreezeAssessment();
+            zipService.DeleteExistingZips();
+            MessageBox.Show("Thank you for taking the assessment.");
+        }
+
+        private void RunTestCases(object sender, RoutedEventArgs e)
+        {
+            var dte = (DTE)System.Runtime.InteropServices.Marshal.GetActiveObject("VisualStudio.DTE");
+            var activeSolutionProjects = dte.ActiveSolutionProjects as Array;
+            var project = activeSolutionProjects.GetValue(0) as Project;
+            var projectDirectory = Path.GetDirectoryName(project.FullName);
+            var executableName = Path.Combine(projectDirectory, "bin", "debug", string.Format("{0}.exe", project.Name));
+
+            var testCaseService = new TestCaseService(executableName);
+            var executedTestCases = testCaseService.ExecuteTestCase();
+            
+            var outputWindow = dte.Windows.Item(Constants.vsWindowKindOutput);
+            var outputService = new OutputService(outputWindow);
+            
+            executedTestCases.ForEach(
+                @case =>
+                {
+                    outputService.WriteToOutput(string.Format("{0} : {1} \n", "TestCase", executedTestCases.IndexOf(@case) + 1));
+                    outputService.WriteToOutput(string.Format("{0} : {1} \n", "Status", @case.TestStatus));
+                    outputService.WriteToOutput(string.Format("{0} : {1} \n", "Input", @case.TestCaseSteps[0].Input));
+                    outputService.WriteToOutput(string.Format("{0} : {1} \n", "Expected Output", @case.TestCaseSteps[0].ExpectedOutput));
+                    outputService.WriteToOutput(string.Format("{0} : {1} \n\n", "Actual Output", @case.OutputText));
+                });
         }
     }
 }

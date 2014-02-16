@@ -3,46 +3,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:twDevAssessmentVsPlugin="clr-namespace:TWDevAssessmentVSPlugin"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.Resources>
-        <DataTemplate x:Key="LoginScreen">
-            <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Enter your Registration ID:"/>
-                    <TextBox Text="{Binding UserId}"/>
-                </StackPanel>
-                <Button Content="Start Your Test" Click="StartTest"/>
-            </StackPanel>
-        </DataTemplate>
-
-        <DataTemplate x:Key="QuestionScreen">
-            <TabControl HorizontalAlignment="Left" VerticalAlignment="Top">
-                <TabItem Header="Instructions">
-                    
-                </TabItem>
-                <TabItem Header="Question">
-                    <StackPanel Orientation="Vertical">
-                        <Button Content="Submit Your Final Code" Click="SubmitCode" HorizontalAlignment="Right"/>
-                        <TextBlock Text="{Binding QuestionDescription}"/>
-                    </StackPanel>
-                </TabItem>
-                <TabItem Header="Test Cases">
-                    <StackPanel Orientation="Vertical">
-                        <Button Content="Run Test Cases" Click="RunTestCases" HorizontalAlignment="Left"/>
-                    </StackPanel>
-                </TabItem>
-            </TabControl>
-        </DataTemplate>
-
-        <twDevAssessmentVsPlugin:ScreenSelector x:Key="ScreenSelector"/>
-
-    </UserControl.Resources>
     <Grid>
+        <TabControl HorizontalAlignment="Left" VerticalAlignment="Top">
+            <TabItem Header="Start Test">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Enter your Registration ID:"/>
+                        <TextBox Text="{Binding UserId}"/>
+                    </StackPanel>
+                    <Button Content="Start Your Test" Click="StartTest"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Instructions">
 
-        <GroupBox Content="{Binding IsLoggedIn}" ContentTemplateSelector="{StaticResource ScreenSelector}">
-
-        </GroupBox>
+            </TabItem>
+            <TabItem Header="Question">
+                <StackPanel Orientation="Vertical">
+                    <Button Content="Submit Your Final Code" Click="SubmitCode" HorizontalAlignment="Right"/>
+                    <TextBlock Text="{Binding QuestionDescription}"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Test Cases">
+                <StackPanel Orientation="Vertical">
+                    <Button Content="Run Test Cases" Click="RunTestCases" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>

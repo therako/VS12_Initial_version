@@ -83,7 +83,6 @@
     <Compile Include="Models\NewTestCase.cs" />
     <Compile Include="Models\Questions.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="ScreenSelector.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\HttpUtility.cs" />
     <Compile Include="Services\LogService.cs" />

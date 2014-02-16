@@ -109,7 +109,7 @@ namespace TWDevAssessmentVSPlugin
 
         protected void NotifyPropertyChanged(string name)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
+            var handler = PropertyChanged;
             if (handler != null)
             {
                 handler(this, new PropertyChangedEventArgs(name));
@@ -125,26 +125,34 @@ namespace TWDevAssessmentVSPlugin
 
         private void RunTestCases(object sender, RoutedEventArgs e)
         {
-            var dte = (DTE)Marshal.GetActiveObject("VisualStudio.DTE");
-            var activeSolutionProjects = dte.ActiveSolutionProjects as Array;
-            var project = activeSolutionProjects.GetValue(0) as Project;
-            var projectDirectory = Path.GetDirectoryName(project.FullName);
-            var executableName = Path.Combine(projectDirectory, "bin", "debug", string.Format("{0}.exe", project.Name));
-
-            var testCaseService = new TestCaseService(executableName);
-            var executedTestCases = testCaseService.ExecuteTestCase();
-
-            testResults = "";
-            
-            executedTestCases.ForEach(
-                @case =>
+            var activeSolutionProjects = Dte.ActiveSolutionProjects as Array;
+            if (activeSolutionProjects != null)
+            {
+                var project = activeSolutionProjects.GetValue(0) as Project;
+                if (project != null)
                 {
-                    testResults += string.Format("{0} : {1} \n", "TestCase", executedTestCases.IndexOf(@case) + 1);
-                    testResults += string.Format("{0} : {1} \n", "Status", @case.TestStatus);
-                    testResults += string.Format("{0} : {1} \n", "Input", @case.TestCaseSteps[0].Input);
-                    testResults += string.Format("{0} : {1} \n", "Expected Output", @case.TestCaseSteps[0].ExpectedOutput);
-                    testResults += string.Format("{0} : {1} \n\n", "Actual Output", @case.OutputText);
-                });
+                    var projectDirectory = Path.GetDirectoryName(project.FullName);
+                    if (projectDirectory != null)
+                    {
+                        var executableName = Path.Combine(projectDirectory, "bin", "debug", string.Format("{0}.exe", project.Name));
+
+                        var testCaseService = new TestCaseService(executableName);
+                        var executedTestCases = testCaseService.ExecuteTestCase();
+
+                        testResults = "";
+            
+                        executedTestCases.ForEach(
+                            @case =>
+                            {
+                                testResults += string.Format("{0} : {1} \n", "TestCase", executedTestCases.IndexOf(@case) + 1);
+                                testResults += string.Format("{0} : {1} \n", "Status", @case.TestStatus);
+                                testResults += string.Format("{0} : {1} \n", "Input", @case.TestCaseSteps[0].Input);
+                                testResults += string.Format("{0} : {1} \n", "Expected Output", @case.TestCaseSteps[0].ExpectedOutput);
+                                testResults += string.Format("{0} : {1} \n\n", "Actual Output", @case.OutputText);
+                            });
+                    }
+                }
+            }
         }
     }
 }

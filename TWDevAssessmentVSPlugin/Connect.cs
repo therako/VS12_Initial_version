@@ -93,8 +93,6 @@ namespace TWDevAssessmentVSPlugin
 
             Window myWindow = window.CreateToolWindow2(add_in, assemblypath, classname, caption, guidpos, ref ctlobj);
             myWindow.Visible = true;
-            myWindow.WindowState = vsWindowState.vsWindowStateNormal;
-            myWindow.SetKind(vsWindowType.vsWindowTypeOutput);
             myWindow.Activate();
 
             buildEvents = _applicationObject.Events.BuildEvents;

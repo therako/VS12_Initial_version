@@ -131,7 +131,9 @@
   <ItemGroup>
     <Content Include="Resources\Images.png" />
     <Content Include="Resources\Package.ico" />
-    <Content Include="TWDevAssessmentVSPlugin.AddIn" />
+    <Content Include="TWDevAssessmentVSPlugin.AddIn">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

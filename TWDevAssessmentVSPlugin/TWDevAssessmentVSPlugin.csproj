@@ -18,13 +18,14 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <Optimize>false</Optimize>
-    <OutputPath>.\bin\Debug\</OutputPath>
+    <OutputPath>..\..\Documents\Visual Studio 2012\Addins\</OutputPath>
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <IncrementalBuild>false</IncrementalBuild>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>TWDevAssessmentVSPlugin.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -39,6 +40,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <RootNamespace>TWDevAssessmentVSPlugin</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -124,9 +128,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\Documents\Visual Studio 2012\Addins\TWDevAssessmentVSPlugin - For Testing.AddIn">
-      <Link>TWDevAssessmentVSPlugin - For Testing.AddIn</Link>
-    </Content>
     <Content Include="Resources\Images.png" />
     <Content Include="Resources\Package.ico" />
     <Content Include="TWDevAssessmentVSPlugin.AddIn" />

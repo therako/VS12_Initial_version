@@ -51,19 +51,6 @@ namespace TWDevAssessmentVSPlugin
 					{
 						command.AddControl(toolsPopup.CommandBar, 1);
 					}
-
-                    var add_in = _applicationObject.AddIns.Item(1);
-                    var window = (Windows2)_applicationObject.Windows;
-
-                    var assemblypath = Assembly.GetExecutingAssembly().Location;
-                    string classname = "TWDevAssessmentControl.TWDevAssessmentControl";
-                    string guidpos = "{E87F0FC8-5330-442C-AF56-4F42B5F1AD11}";
-                    string caption = "ThoughtWorks Dev Assessment";
-                    object ctlobj = null;
-
-                    Window myWindow = window.CreateToolWindow2(add_in, assemblypath, classname, caption, guidpos, ref ctlobj);
-                    myWindow.Visible = true;
-
 				}
 				catch(System.ArgumentException)
 				{
@@ -94,6 +81,19 @@ namespace TWDevAssessmentVSPlugin
 		/// <seealso class='IDTExtensibility2' />
 		public void OnStartupComplete(ref Array custom)
 		{
+            var add_in = _applicationObject.AddIns.Item(1);
+            var window = (Windows2)_applicationObject.Windows;
+
+            var assemblypath = Assembly.GetExecutingAssembly().Location;
+            string classname = "TWDevAssessmentVSPlugin.TWDevAssessmentControl";
+            string guidpos = "{E87F0FC8-5330-442C-AF56-4F42B5F1AD11}";
+            string caption = "ThoughtWorks Dev Assessment";
+            object ctlobj = null;
+
+            Window myWindow = window.CreateToolWindow2(add_in, assemblypath, classname, caption, guidpos, ref ctlobj);
+            myWindow.Visible = true;
+            myWindow.Activate();
+
 		}
 
 		/// <summary>Implements the OnBeginShutdown method of the IDTExtensibility2 interface. Receives notification that the host application is being unloaded.</summary>

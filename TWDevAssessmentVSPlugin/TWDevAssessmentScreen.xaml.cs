@@ -11,14 +11,15 @@ using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace TWDevAssessmentVSPlugin
 {
-    public partial class TWDevAssessmentScreen
+    public partial class TWDevAssessmentScreen : INotifyPropertyChanged
     {
         private BuildEvents buildEvents;
 
         public TWDevAssessmentScreen()
         {
             IsLoginEnabled = true;
-            IsQuestionEnabled = true;
+            IsQuestionEnabled = false;
+            DataContext = this;
             InitializeComponent();
             userService = new UserService();
             zipService = new ZipService();

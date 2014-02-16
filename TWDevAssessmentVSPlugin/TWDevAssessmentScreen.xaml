@@ -26,13 +26,13 @@
             <TabItem Name="QuestionsTab" Header="Question" Visibility="{Binding Path=IsQuestionEnabled ,Converter={StaticResource Bool2VisibilityConvertor}}">
                 <StackPanel Orientation="Vertical">
                     <Button Content="Submit Your Final Code" Click="SubmitCode" HorizontalAlignment="Right"/>
-                    <TextBlock Text="{Binding Path=QuestionDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                    <TextBlock Text="{Binding Path=QuestionDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinHeight="200" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                 </StackPanel>
             </TabItem>
             <TabItem Name="TestCasesTab" Header="Test Cases" Visibility="{Binding Path=IsQuestionEnabled ,Converter={StaticResource Bool2VisibilityConvertor}}">
                 <StackPanel Orientation="Vertical">
                     <Button Content="Run Test Cases" Click="RunTestCases" HorizontalAlignment="Left"/>
-                    <TextBlock Text="{Binding Path=TestResults, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                    <TextBlock Text="{Binding Path=TestResults, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinHeight="200" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                 </StackPanel>
             </TabItem>
         </TabControl>

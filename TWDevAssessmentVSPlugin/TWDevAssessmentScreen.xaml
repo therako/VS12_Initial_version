@@ -3,31 +3,36 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <TabControl HorizontalAlignment="Left" VerticalAlignment="Top">
-            <TabItem Header="Start Test">
+             xmlns:twDevAssessmentVsPlugin="clr-namespace:TWDevAssessmentVSPlugin"
+             mc:Ignorable="d" HorizontalAlignment="Stretch" MinWidth="400" VerticalContentAlignment="Stretch"
+             d:DesignHeight="300" d:DesignWidth="300" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <UserControl.Resources>
+        <twDevAssessmentVsPlugin:Bool2VisibilityConverter x:Key="Bool2VisibilityConvertor" />
+    </UserControl.Resources>
+    <Grid VerticalAlignment="Stretch" >
+        <TabControl Name="LoginTab" HorizontalAlignment="Left" VerticalAlignment="Top" IsEnabled="True" MinWidth="600">
+            <TabItem Header="Start Test" Visibility="{Binding Path=IsLoginEnabled ,Converter={StaticResource Bool2VisibilityConvertor}}">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Enter your Registration ID:"/>
-                        <TextBox Text="{Binding UserId}"/>
+                        <TextBox Text="{Binding UserId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"/>
                     </StackPanel>
-                    <Button Content="Start Your Test" Click="StartTest"/>
+                    <Button Content="Start Your Test" Click="StartTest" Width="300"/>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Instructions">
+            <TabItem Name="InstructionsTab" Header="Instructions">
 
             </TabItem>
-            <TabItem Header="Question">
+            <TabItem Name="QuestionsTab" Header="Question" Visibility="{Binding Path=IsQuestionEnabled ,Converter={StaticResource Bool2VisibilityConvertor}}">
                 <StackPanel Orientation="Vertical">
                     <Button Content="Submit Your Final Code" Click="SubmitCode" HorizontalAlignment="Right"/>
-                    <TextBlock Text="{Binding QuestionDescription}"/>
+                    <TextBlock Text="{Binding Path=QuestionDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Test Cases">
+            <TabItem Name="TestCasesTab" Header="Test Cases" Visibility="{Binding Path=IsQuestionEnabled ,Converter={StaticResource Bool2VisibilityConvertor}}">
                 <StackPanel Orientation="Vertical">
                     <Button Content="Run Test Cases" Click="RunTestCases" HorizontalAlignment="Left"/>
+                    <TextBlock Text="{Binding Path=TestResults, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                 </StackPanel>
             </TabItem>
         </TabControl>

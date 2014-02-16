@@ -1,48 +1,101 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Net;
+using System.Runtime.InteropServices;
 using System.Windows;
 using EnvDTE;
+using EnvDTE80;
 using TWDevAssessmentVSPlugin.Services;
+using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace TWDevAssessmentVSPlugin
 {
     public partial class TWDevAssessmentScreen
     {
+        private BuildEvents buildEvents;
+
         public TWDevAssessmentScreen()
         {
+            IsLoginEnabled = true;
+            IsQuestionEnabled = true;
             InitializeComponent();
-            IsLoggedIn = true;
             userService = new UserService();
             zipService = new ZipService();
+            Dte = Marshal.GetActiveObject("VisualStudio.DTE.11.0") as DTE2;
         }
-        private bool isLoggedIn;
+
         private readonly UserService userService;
         private readonly ZipService zipService;
+        private DTE2 Dte;
+        private string userId = "";
+        private string questionDescription ="";
+        private bool isQuestionEnabled;
+        private bool isLoginEnabled;
+        private string testResults;
 
-        public bool IsLoggedIn
+
+        public string UserId
         {
-            get { return isLoggedIn; }
+            get { return userId; }
             set
             {
-                isLoggedIn = value;
-                OnPropertyChanged("IsLoggedIn");
+                userId = value;
+                NotifyPropertyChanged("UserId");
             }
         }
 
-        public string UserId { get; set; }
+        public bool IsQuestionEnabled
+        {
+            get { return isQuestionEnabled; }
+            set
+            {
+                isQuestionEnabled = value;
+                NotifyPropertyChanged("IsQuestionEnabled");
+            }
+        }
 
-        public string QuestionDescription { get; set; }
+        public bool IsLoginEnabled
+        {
+            get { return isLoginEnabled; }
+            set
+            {
+                isLoginEnabled = value;
+                NotifyPropertyChanged("IsLoginEnabled");
+            }
+        }
 
-        
+        public string QuestionDescription
+        {
+            get { return questionDescription; }
+            set
+            {
+                questionDescription = value;
+                NotifyPropertyChanged("QuestionDescription");
+            }
+        }
+
+        public string TestResults
+        {
+            get { return testResults; }
+            set
+            {
+                testResults = value;
+                NotifyPropertyChanged("TestResults");
+            }
+        }
+
         private void StartTest(object sender, RoutedEventArgs e)
         {
-            
+            if(string.IsNullOrEmpty(UserId))
+                return;
             var result = userService.BeginSessionForTheUser(UserId);
             if (result)
             {
                 MessageBox.Show("Successfully Registered, You can start writing your code on a Console Application Project.\n Refer to THOUGHTWORKS menu for Questions and Test cases execution.");
-                IsLoggedIn = true;
+                IsLoginEnabled = false;
+                IsQuestionEnabled = true;
+                QuestionDescription = WebUtility.HtmlDecode(UserService.User.Problem.Description);
             }
             else
             {
@@ -54,7 +107,7 @@ namespace TWDevAssessmentVSPlugin
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged(string name)
+        protected void NotifyPropertyChanged(string name)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null)
@@ -72,7 +125,7 @@ namespace TWDevAssessmentVSPlugin
 
         private void RunTestCases(object sender, RoutedEventArgs e)
         {
-            var dte = (DTE)System.Runtime.InteropServices.Marshal.GetActiveObject("VisualStudio.DTE");
+            var dte = (DTE)Marshal.GetActiveObject("VisualStudio.DTE");
             var activeSolutionProjects = dte.ActiveSolutionProjects as Array;
             var project = activeSolutionProjects.GetValue(0) as Project;
             var projectDirectory = Path.GetDirectoryName(project.FullName);
@@ -80,18 +133,17 @@ namespace TWDevAssessmentVSPlugin
 
             var testCaseService = new TestCaseService(executableName);
             var executedTestCases = testCaseService.ExecuteTestCase();
-            
-            var outputWindow = dte.Windows.Item(Constants.vsWindowKindOutput);
-            var outputService = new OutputService(outputWindow);
+
+            testResults = "";
             
             executedTestCases.ForEach(
                 @case =>
                 {
-                    outputService.WriteToOutput(string.Format("{0} : {1} \n", "TestCase", executedTestCases.IndexOf(@case) + 1));
-                    outputService.WriteToOutput(string.Format("{0} : {1} \n", "Status", @case.TestStatus));
-                    outputService.WriteToOutput(string.Format("{0} : {1} \n", "Input", @case.TestCaseSteps[0].Input));
-                    outputService.WriteToOutput(string.Format("{0} : {1} \n", "Expected Output", @case.TestCaseSteps[0].ExpectedOutput));
-                    outputService.WriteToOutput(string.Format("{0} : {1} \n\n", "Actual Output", @case.OutputText));
+                    testResults += string.Format("{0} : {1} \n", "TestCase", executedTestCases.IndexOf(@case) + 1);
+                    testResults += string.Format("{0} : {1} \n", "Status", @case.TestStatus);
+                    testResults += string.Format("{0} : {1} \n", "Input", @case.TestCaseSteps[0].Input);
+                    testResults += string.Format("{0} : {1} \n", "Expected Output", @case.TestCaseSteps[0].ExpectedOutput);
+                    testResults += string.Format("{0} : {1} \n\n", "Actual Output", @case.OutputText);
                 });
         }
     }

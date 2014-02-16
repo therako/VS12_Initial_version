@@ -4,6 +4,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.CommandBars;
 using System.Reflection;
+using TWDevAssessmentVSPlugin.Services;
 
 namespace TWDevAssessmentVSPlugin
 {
@@ -92,9 +93,38 @@ namespace TWDevAssessmentVSPlugin
 
             Window myWindow = window.CreateToolWindow2(add_in, assemblypath, classname, caption, guidpos, ref ctlobj);
             myWindow.Visible = true;
+            myWindow.WindowState = vsWindowState.vsWindowStateNormal;
+            myWindow.SetKind(vsWindowType.vsWindowTypeOutput);
             myWindow.Activate();
 
+            buildEvents = _applicationObject.Events.BuildEvents;
+            buildEvents.OnBuildDone += buildEvents_OnBuildDone;
+
 		}
+
+        private void buildEvents_OnBuildDone(vsBuildScope scope, vsBuildAction action)
+        {
+            if(string.IsNullOrEmpty(UserService.User.Id))
+                return;
+            var zipService = new ZipService();
+
+            var solutionName = _applicationObject.Solution.FullName;
+            var destinationFileName = string.Format("{0}_{1}.zip", UserService.User.Id, DateTime.Now.Ticks);
+            var zipFileName = zipService.ZipDirectory(solutionName, destinationFileName);
+            var outputWindow = _applicationObject.Windows.Item(Constants.vsWindowKindOutput);
+            var outputService = new OutputService(outputWindow);
+            try
+            {
+                var fileService = new FileService();
+                fileService.UploadFile(zipFileName);
+                outputService.WriteToOutput("File uploaded successfully to TW Server");
+            }
+            catch (Exception exception)
+            {
+                outputService.WriteToOutput(string.Format("Exception Message: {0}\n", exception.Message));
+            }
+
+        }
 
 		/// <summary>Implements the OnBeginShutdown method of the IDTExtensibility2 interface. Receives notification that the host application is being unloaded.</summary>
 		/// <param term='custom'>Array of parameters that are host application specific.</param>
@@ -142,5 +172,6 @@ namespace TWDevAssessmentVSPlugin
 		}
 		private DTE2 _applicationObject;
 		private AddIn _addInInstance;
+	    private BuildEvents buildEvents;
 	}
 }

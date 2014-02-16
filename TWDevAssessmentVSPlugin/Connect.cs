@@ -3,9 +3,7 @@ using Extensibility;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.CommandBars;
-using System.Resources;
 using System.Reflection;
-using System.Globalization;
 
 namespace TWDevAssessmentVSPlugin
 {
@@ -58,7 +56,7 @@ namespace TWDevAssessmentVSPlugin
                     var window = (Windows2)_applicationObject.Windows;
 
                     var assemblypath = Assembly.GetExecutingAssembly().Location;
-                    string classname = "TWAddIn.TWDevAssessmentControl";
+                    string classname = "TWDevAssessmentControl.TWDevAssessmentControl";
                     string guidpos = "{E87F0FC8-5330-442C-AF56-4F42B5F1AD11}";
                     string caption = "ThoughtWorks Dev Assessment";
                     object ctlobj = null;
